@@ -21,10 +21,10 @@ public class User {
     @Cascade({CascadeType.PERSIST,CascadeType.DELETE_ORPHAN})
     private String user_id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String user_name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String bio;
