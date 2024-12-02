@@ -46,6 +46,10 @@ public class QuestionService {
         return questionRepository.findAllByTextContainingIgnoreCase(questionDTO.getText());
     }
 
+    public Optional<Question> getQuestionById(String id){
+        return questionRepository.findById(id);
+    }
+
     public void deleteQuestionById(String id) {
         if(questionRepository.existsById(id)) {
             questionRepository.deleteById(id);
