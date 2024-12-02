@@ -19,4 +19,9 @@ public interface UserRepository extends JpaRepository<User, String> {
             "bio = CASE WHEN :bio is not null THEN :bio END " +
             "WHERE user_id = :id")
     void updateUser(String id, String userName, String email, String bio);
+
+    @Query("select case when count(u)> 0 then true else false end from User u " +
+            "WHERE UPPER(u.email) = UPPER(:email) OR UPPER(u.user_name) = UPPER(:userName)")
+    boolean existsByEmailAndUserName(String email, String userName);
+
 }

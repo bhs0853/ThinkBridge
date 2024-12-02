@@ -35,15 +35,18 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Optional<User>> createUser(@RequestBody UserDTO userDTO){
-        Optional<User> newUser = userService.createUser(userDTO);
-        if(newUser.isPresent()){
+    public ResponseEntity<Optional<?>> createUser(@RequestBody UserDTO userDTO){
+        Optional<?> newUser = userService.createUser(userDTO);
+        if(newUser.isEmpty()){
+            return ResponseEntity.internalServerError().build();
+        }
+        if((newUser.get().getClass()).equals(User.class)){
             return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newUser);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Optional<User>> updateUser(@PathVariable("id") String id, @RequestBody UserDTO userDTO){
         Optional<User> user = userService.updateUser(id,userDTO);
         if(user.isPresent()){

@@ -1,12 +1,20 @@
 package com.bhs.thinkbridge.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import java.util.Date;
 
 @MappedSuperclass
+@SuperBuilder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseModel {
 
     @Id
@@ -21,6 +29,7 @@ public class BaseModel {
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "user",nullable = false)
     private User user;
+
 }

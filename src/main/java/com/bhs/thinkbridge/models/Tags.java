@@ -14,13 +14,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Topic {
+public class Tags {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String topic_id;
+    private String tag_id;
 
     private String name;
 
-    @ManyToMany(mappedBy = "topicList")
+    @ManyToMany(mappedBy = "tagsList")
     private List<Question> questionList;
 }

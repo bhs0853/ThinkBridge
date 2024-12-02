@@ -9,6 +9,6 @@ import jakarta.persistence.ManyToOne;
 public class Answer extends BaseModel{
 
     @ManyToOne
-    @JoinColumn(name = "question_id",nullable = false)
+    @JoinColumn(name = "question",nullable = false)
     private Question question;
 }
