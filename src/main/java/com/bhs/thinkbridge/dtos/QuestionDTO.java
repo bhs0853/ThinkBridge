@@ -1,6 +1,5 @@
 package com.bhs.thinkbridge.dtos;
 
-import com.bhs.thinkbridge.models.Tags;
 import lombok.Data;
 
 import java.util.List;
@@ -12,5 +11,5 @@ public class QuestionDTO {
 
     private String user_id;
 
-    private List<Tags> tagsList;
+    private List<String> tagsList;
 }

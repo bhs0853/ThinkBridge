@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -17,6 +18,6 @@ public interface AnswerRepository extends JpaRepository<Answer, String> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE Answer SET text = :text WHERE id = :id")
-    void updateAnswerById(String id, String text);
+    @Query("UPDATE Answer SET text = :text,updated_at = :date WHERE id = :id")
+    void updateAnswerById(String id, String text, Date date);
 }

@@ -1,38 +1,51 @@
 package com.bhs.thinkbridge.services;
 
+import com.bhs.thinkbridge.dtos.ErrorDTO;
 import com.bhs.thinkbridge.dtos.QuestionDTO;
 import com.bhs.thinkbridge.models.Question;
+import com.bhs.thinkbridge.models.Tag;
 import com.bhs.thinkbridge.models.User;
 import com.bhs.thinkbridge.repositories.QuestionRepository;
+import com.bhs.thinkbridge.repositories.TagRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserService userService;
+    private final TagRepository tagRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserService userService){
+    public QuestionService(QuestionRepository questionRepository, UserService userService, TagRepository tagRepository){
         this.questionRepository = questionRepository;
         this.userService = userService;
+        this.tagRepository = tagRepository;
     }
 
-    public Optional<Question> postQuestion(QuestionDTO questionDTO){
+    public Optional<?> postQuestion(QuestionDTO questionDTO){
         if(questionDTO.getUser_id() == null || questionDTO.getText() == null) {
-            return Optional.empty();
+            return Optional.of(new ErrorDTO(HttpStatus.BAD_REQUEST,"question should have more than 5 characters"));
         }
         Optional<User> user = userService.getUserById(questionDTO.getUser_id());
+        List<Tag> tagList = questionDTO.getTagsList().stream()
+                .map(tagRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
         if(user.isEmpty()){
-            return Optional.empty();
+            return Optional.of(new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR));
         }
         Question newQuestion = Question.builder()
                 .user(user.get())
-                .createdAt(new Date())
+                .created_at(new Date())
+                .updated_at(new Date())
                 .text(questionDTO.getText())
-                .tagsList(questionDTO.getTagsList())
+                .tag_list(tagList)
                 .build();
         questionRepository.save(newQuestion);
         return Optional.of(newQuestion);
@@ -58,7 +71,7 @@ public class QuestionService {
 
     public Optional<Question> updateQuestion(String id,QuestionDTO questionDTO) {
         if(questionRepository.existsById(id)){
-            questionRepository.updateQuestion(id,questionDTO.getText());
+            questionRepository.updateQuestion(id,questionDTO.getText(),new Date());
         }
         return questionRepository.findById(id);
     }

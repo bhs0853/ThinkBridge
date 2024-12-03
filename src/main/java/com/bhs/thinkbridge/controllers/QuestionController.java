@@ -32,12 +32,12 @@ public class QuestionController {
     }
 
     @PostMapping
-    public ResponseEntity<Optional<Question>> postQuestion(@RequestBody QuestionDTO questionDTO){
-        Optional<Question> newQuestion= questionService.postQuestion(questionDTO);
-        if(newQuestion.isPresent()){
-            return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion);
+    public ResponseEntity<?> postQuestion(@RequestBody QuestionDTO questionDTO){
+        Optional<?> newQuestion= questionService.postQuestion(questionDTO);
+        if(newQuestion.get().getClass().equals(Question.class)){
+            return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion.get());
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().body(newQuestion.get());
     }
 
     @PatchMapping("/{id}")
@@ -46,7 +46,7 @@ public class QuestionController {
         if(updatedQuestion.isPresent()){
             return ResponseEntity.ok(updatedQuestion);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @DeleteMapping("/{id}")

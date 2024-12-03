@@ -2,8 +2,9 @@ package com.bhs.thinkbridge.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -12,21 +13,25 @@ import java.util.Date;
 
 @MappedSuperclass
 @SuperBuilder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Cascade({CascadeType.PERSIST,CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.PERSIST,CascadeType.REMOVE})
     private String id;
 
     @Column(nullable = false)
     private String text;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private Date created_at;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updated_at;
 
     @ManyToOne
     @JoinColumn(name = "user",nullable = false)

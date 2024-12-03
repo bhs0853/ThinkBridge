@@ -4,6 +4,7 @@ package com.bhs.thinkbridge.controllers;
 import com.bhs.thinkbridge.dtos.AnswerDTO;
 import com.bhs.thinkbridge.models.Answer;
 import com.bhs.thinkbridge.services.AnswerService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class AnswerController {
     public ResponseEntity<?> createAnswer(@PathVariable("id") String id, @RequestBody AnswerDTO answerDTO){
         Optional<?> answer = answerService.createAnswer(id,answerDTO);
         if(answer.get().getClass().equals(Answer.class)){
-            return ResponseEntity.ok(answer.get());
+            return ResponseEntity.status(HttpStatus.CREATED).body(answer.get());
         }
         return ResponseEntity.badRequest().body(answer.get());
     }
@@ -46,4 +47,5 @@ public class AnswerController {
         answerService.deleteAnswer(id);
         return ResponseEntity.ok().build();
     }
+
 }

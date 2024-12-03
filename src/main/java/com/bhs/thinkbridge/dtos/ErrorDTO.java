@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ErrorDTO {
 
     private int status;
@@ -18,6 +15,10 @@ public class ErrorDTO {
     public ErrorDTO(HttpStatus status){
         this.status = status.value();
         this.error = status.getReasonPhrase();
+    }
+    public ErrorDTO(HttpStatus status,String error){
+        this.status = status.value();
+        this.error = error;
     }
 
 }

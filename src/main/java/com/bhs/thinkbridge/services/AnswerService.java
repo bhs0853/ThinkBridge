@@ -32,18 +32,21 @@ public class AnswerService {
         return answerRepository.findAllByQuestionEquals(question.get());
     }
 
+    public Optional<Answer> getAnswerById(String id) {
+        return answerRepository.findById(id);
+    }
+
     public Optional<?> createAnswer(String id, AnswerDTO answerDTO) {
         if(answerDTO.getText() == null || answerDTO.getUser_id() == null){
-            ErrorDTO error = new ErrorDTO(HttpStatus.BAD_REQUEST);
-            error.setError("Please enter some text");
-            return Optional.of(error);
+            return Optional.of(new ErrorDTO(HttpStatus.BAD_REQUEST,"Please enter some text"));
         }
         Optional<User> user = userService.getUserById(answerDTO.getUser_id());
         Optional<Question> question = questionService.getQuestionById(id);
         Answer newAnswer = Answer.builder()
                 .question(question.get())
                 .user(user.get())
-                .createdAt(new Date())
+                .created_at(new Date())
+                .updated_at(new Date())
                 .text(answerDTO.getText())
                 .build();
         answerRepository.save(newAnswer);
@@ -51,7 +54,7 @@ public class AnswerService {
     }
 
     public Optional<Answer> updateAnswer(String id, AnswerDTO answerDTO) {
-        answerRepository.updateAnswerById(id,answerDTO.getText());
+        answerRepository.updateAnswerById(id,answerDTO.getText(),new Date());
         return answerRepository.findById(id);
     }
 
