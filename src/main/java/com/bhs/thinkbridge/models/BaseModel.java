@@ -8,6 +8,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
@@ -17,6 +20,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class BaseModel {
 
     @Id
@@ -28,9 +32,11 @@ public class BaseModel {
     private String text;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     private Date created_at;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @LastModifiedDate
     private Date updated_at;
 
     @ManyToOne
