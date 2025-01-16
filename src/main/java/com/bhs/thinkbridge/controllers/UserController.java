@@ -1,63 +1,74 @@
 package com.bhs.thinkbridge.controllers;
 
 
-import com.bhs.thinkbridge.dtos.UserDTO;
+import com.bhs.thinkbridge.dtos.UpdateUserRequestDTO;
+import com.bhs.thinkbridge.dtos.UserDetailsResponseDto;
 import com.bhs.thinkbridge.models.User;
 import com.bhs.thinkbridge.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 public class UserController {
+
     private final UserService userService;
 
     public UserController(UserService userService){
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable("id") String id){
-        Optional<User> user = userService.getUserById(id);
+    @GetMapping("/me")
+    public ResponseEntity<UserDetailsResponseDto> getAuthenticatedUser(){
+        Optional<User> user = userService.getUser();
+        System.out.println("user");
         if(user.isPresent()){
-            return ResponseEntity.ok(user);
+            User authenticatedUser = (User) user.get();
+            UserDetailsResponseDto responseDto = UserDetailsResponseDto
+                                                    .builder()
+                                                    .user_id(authenticatedUser.getUser_id())
+                                                    .email(authenticatedUser.getEmail())
+                                                    .bio(authenticatedUser.getBio())
+                                                    .created_at(authenticatedUser.getCreated_at())
+                                                    .updated_at(authenticatedUser.getUpdated_at())
+                                                    .authorities(authenticatedUser.getAuthorities())
+                                                    .status(HttpStatus.OK)
+                                                    .build();
+            return ResponseEntity.ok(responseDto);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.internalServerError().build();
     }
 
-    @PostMapping
-    public ResponseEntity<Optional<?>> createUser(@RequestBody UserDTO userDTO){
-        Optional<?> newUser = userService.createUser(userDTO);
-        if(newUser.isEmpty()){
-            return ResponseEntity.internalServerError().build();
-        }
-        if((newUser.get().getClass()).equals(User.class)){
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(newUser);
-    }
+    @PatchMapping("/update")
+    public ResponseEntity<UserDetailsResponseDto> updateUser(@RequestBody UpdateUserRequestDTO userDTO){
+        Optional<User> user = userService.updateUser(userDTO);
+        System.out.println("update User");
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Optional<User>> updateUser(@PathVariable("id") String id, @RequestBody UserDTO userDTO){
-        Optional<User> user = userService.updateUser(id,userDTO);
         if(user.isPresent()){
-            return ResponseEntity.ok(user);
+            User authenticatedUser = (User) user.get();
+            UserDetailsResponseDto responseDto = UserDetailsResponseDto
+                    .builder()
+                    .user_id(authenticatedUser.getUser_id())
+                    .email(authenticatedUser.getEmail())
+                    .bio(authenticatedUser.getBio())
+                    .created_at(authenticatedUser.getCreated_at())
+                    .updated_at(authenticatedUser.getUpdated_at())
+                    .authorities(authenticatedUser.getAuthorities())
+                    .status(HttpStatus.OK)
+                    .build();
+            return ResponseEntity.ok(responseDto);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") String id){
-        userService.deleteUserById(id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(){
+        userService.deleteUser();
+        System.out.println("delete user");
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }

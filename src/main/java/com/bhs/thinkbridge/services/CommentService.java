@@ -41,7 +41,7 @@ public class CommentService {
             return Optional.of(new ErrorDTO(HttpStatus.BAD_REQUEST,"The comment should have atleast 3 characters"));
         }
         Optional<Answer> answer = answerService.getAnswerById(commentDTO.getAnswer_id());
-        Optional<User> user = userService.getUserById(commentDTO.getUser_id());
+        Optional<User> user = userService.getUser();
         if(user.isEmpty() || answer.isEmpty()){
             return Optional.of(new ErrorDTO(HttpStatus.INTERNAL_SERVER_ERROR));
         }

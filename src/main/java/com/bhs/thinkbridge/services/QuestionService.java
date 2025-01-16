@@ -31,7 +31,7 @@ public class QuestionService {
         if(questionDTO.getUser_id() == null || questionDTO.getText() == null) {
             return Optional.of(new ErrorDTO(HttpStatus.BAD_REQUEST,"question should have more than 5 characters"));
         }
-        Optional<User> user = userService.getUserById(questionDTO.getUser_id());
+        Optional<User> user = userService.getUser();
         List<Tag> tagList = questionDTO.getTagsList().stream()
                 .map(tagRepository::findById)
                 .filter(Optional::isPresent)

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 
 @Repository
@@ -16,15 +17,18 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Transactional
     @Modifying
     @Query("UPDATE User SET " +
-            "user_name = CASE WHEN :userName is not null THEN :userName ELSE user_name END," +
             "email = CASE WHEN :email is not null THEN :email ELSE email END," +
             "bio = CASE WHEN :bio is not null THEN :bio ELSE bio END, " +
-            "updated_at = CASE WHEN :date is not null THEN :date END " +
+            "updated_at = CASE WHEN :date is not null THEN :date END, " +
+            "password = CASE WHEN :password is not null THEN :password ELSE password END "+
             "WHERE user_id = :id")
-    void updateUser(String id, String userName, String email, String bio, Date date);
+    void updateUser(String id, String email, String bio, String password,Date date);
 
-    @Query("select case when count(u)> 0 then true else false end from User u " +
-            "WHERE UPPER(u.email) = UPPER(:email) OR UPPER(u.user_name) = UPPER(:userName)")
-    boolean existsByEmailAndUserName(String email, String userName);
+    Optional<User> findUserByEmail(String email);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM User WHERE email = :email")
+    void deleteUserByEmail(String email);
 
 }

@@ -40,7 +40,7 @@ public class AnswerService {
         if(answerDTO.getText() == null || answerDTO.getUser_id() == null){
             return Optional.of(new ErrorDTO(HttpStatus.BAD_REQUEST,"Please enter some text"));
         }
-        Optional<User> user = userService.getUserById(answerDTO.getUser_id());
+        Optional<User> user = userService.getUser();
         Optional<Question> question = questionService.getQuestionById(id);
         Answer newAnswer = Answer.builder()
                 .question(question.get())
