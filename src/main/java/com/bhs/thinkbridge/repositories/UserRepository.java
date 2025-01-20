@@ -19,10 +19,14 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("UPDATE User SET " +
             "email = CASE WHEN :email is not null THEN :email ELSE email END," +
             "bio = CASE WHEN :bio is not null THEN :bio ELSE bio END, " +
-            "updated_at = CASE WHEN :date is not null THEN :date END, " +
-            "password = CASE WHEN :password is not null THEN :password ELSE password END "+
+            "updated_at = CASE WHEN :date is not null THEN :date END " +
             "WHERE user_id = :id")
-    void updateUser(String id, String email, String bio, String password,Date date);
+    void updateUser(String id, String email, String bio, Date date);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User SET password = :password WHERE user_id = :id")
+    void updatePassword(String id, String password);
 
     Optional<User> findUserByEmail(String email);
 

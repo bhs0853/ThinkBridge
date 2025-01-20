@@ -1,6 +1,9 @@
 package com.bhs.thinkbridge.controllers;
 
 import com.bhs.thinkbridge.dtos.*;
+import com.bhs.thinkbridge.requestDto.SignInRequestDTO;
+import com.bhs.thinkbridge.requestDto.SignUpUserRequestDTO;
+import com.bhs.thinkbridge.responseDto.AuthResponseDto;
 import com.bhs.thinkbridge.services.JwtService;
 import com.bhs.thinkbridge.services.UserAuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,7 +39,7 @@ public class UserAuthController {
         else if(newUser.get().getClass().equals(AuthResponseDto.class))
             return ResponseEntity.ok(newUser);
         else {
-            Error e = (Error) newUser.get();
+            Exception e = (Exception) newUser.get();
             return ResponseEntity.badRequest().body(new ErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage()));
         }
     }
@@ -44,7 +47,7 @@ public class UserAuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> signInUser(@RequestBody SignInRequestDTO requestDTO, HttpServletResponse servletResponse){
         Optional<?> authenticatedUser = userAuthService.authenticateUser(requestDTO);
-        System.out.println("SIGN in");
+        System.out.println("Sign In");
 
         if(authenticatedUser.isEmpty())
             return ResponseEntity.internalServerError().build();
@@ -60,7 +63,7 @@ public class UserAuthController {
             return ResponseEntity.ok(authenticatedUser);
         }
         else{
-            Error e = (Error) authenticatedUser.get();
+            Exception e = (Exception) authenticatedUser.get();
             return ResponseEntity.badRequest().body(new ErrorDTO(HttpStatus.BAD_REQUEST, e.getMessage()));
         }
     }

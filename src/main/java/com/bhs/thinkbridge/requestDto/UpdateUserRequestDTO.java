@@ -1,4 +1,4 @@
-package com.bhs.thinkbridge.dtos;
+package com.bhs.thinkbridge.requestDto;
 
 import lombok.Data;
 
